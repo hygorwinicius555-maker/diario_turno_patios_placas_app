@@ -27,3 +27,5 @@ captures/
 .cxx/
 
 .env.server
+
+dRecursos/
