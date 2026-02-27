@@ -8,15 +8,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -31,11 +34,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seuapp.diarioturnoplacas.navigation.appTabs
 import com.seuapp.diarioturnoplacas.ui.screens.AppUiState
@@ -46,6 +52,13 @@ import com.seuapp.diarioturnoplacas.ui.screens.MainViewModelFactory
 import com.seuapp.diarioturnoplacas.ui.screens.OcorrenciasScreen
 import com.seuapp.diarioturnoplacas.ui.screens.ProgramacaoScreen
 import com.seuapp.diarioturnoplacas.ui.screens.RecursosScreen
+
+private val HeaderBlue = Color(0xFF356A9A)
+private val ShellGray = Color(0xFFE6E7EA)
+private val MenuCard = Color(0xFFF3F3F4)
+private val MenuCardSelected = Color(0xFFDDEAF7)
+private val MenuIcon = Color(0xFF2F6695)
+private val MenuText = Color(0xFF7A7F86)
 
 @Composable
 fun AppScaffold() {
@@ -63,24 +76,34 @@ fun AppScaffold() {
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        containerColor = Color(0xFFE6E7EA)
+        containerColor = ShellGray
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(ShellGray)
                 .padding(padding)
         ) {
-            AppHeader()
-            DashboardGrid(
-                currentRoute = currentRoute,
-                onRouteChange = { currentRoute = it }
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 4.dp)
-            ) {
-                AppContent(route = currentRoute, uiState = uiState, vm = vm)
+            Column(modifier = Modifier.fillMaxSize()) {
+                AppHeader()
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = ShellGray,
+                            shape = RoundedCornerShape(topStart = 34.dp, topEnd = 34.dp)
+                        )
+                        .padding(top = 10.dp)
+                ) {
+                    DashboardGrid(
+                        currentRoute = currentRoute,
+                        onRouteChange = { currentRoute = it }
+                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AppContent(route = currentRoute, uiState = uiState, vm = vm)
+                    }
+                }
             }
         }
     }
@@ -91,38 +114,45 @@ private fun AppHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF2F6695))
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .background(HeaderBlue)
+            .padding(horizontal = 14.dp)
+            .padding(top = 8.dp, bottom = 20.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("13:55", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            Text("5G", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Menu",
-                    tint = Color.White
-                )
+                Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = Color.White)
             }
-            Row {
-                Text(
-                    text = "Diario",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Turno",
-                    color = Color.White,
-                    fontStyle = FontStyle.Italic
-                )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Diario", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text("Turno", color = Color.White, fontStyle = FontStyle.Italic, fontSize = 20.sp)
             }
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.NotificationsNone,
-                    contentDescription = "Notificacoes",
-                    tint = Color.White
-                )
+
+            Box {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificacoes", tint = Color.White)
+                }
+                Badge(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(8.dp),
+                    containerColor = Color(0xFFFF9F0A)
+                ) {}
             }
         }
     }
@@ -133,11 +163,10 @@ private fun DashboardGrid(currentRoute: String, onRouteChange: (String) -> Unit)
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(horizontal = 10.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val rows = appTabs.chunked(3)
-        rows.forEach { rowTabs ->
+        appTabs.chunked(3).forEach { rowTabs ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -147,38 +176,42 @@ private fun DashboardGrid(currentRoute: String, onRouteChange: (String) -> Unit)
                     Card(
                         modifier = Modifier
                             .weight(1f)
-                            .height(96.dp)
+                            .height(112.dp)
                             .clickable { onRouteChange(tab.route) },
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = if (selected) Color(0xFFD6E6F7) else Color(0xFFF2F2F2)
+                            containerColor = if (selected) MenuCardSelected else MenuCard
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                                .padding(horizontal = 8.dp, vertical = 10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 imageVector = tab.icon,
                                 contentDescription = tab.label,
-                                tint = Color(0xFF2F6695),
-                                modifier = Modifier.size(26.dp)
+                                tint = MenuIcon,
+                                modifier = Modifier.size(28.dp)
                             )
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = tab.label.uppercase(),
-                                color = Color(0xFF6B7179),
-                                fontWeight = FontWeight.SemiBold
+                                color = MenuText,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 14.sp
                             )
                         }
                     }
                 }
+
                 repeat(3 - rowTabs.size) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f).width(0.dp))
                 }
             }
         }
