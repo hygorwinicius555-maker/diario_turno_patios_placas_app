@@ -25,3 +25,5 @@ Thumbs.db
 captures/
 .externalNativeBuild/
 .cxx/
+
+.env.server
