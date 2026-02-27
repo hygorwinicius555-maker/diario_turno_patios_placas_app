@@ -173,4 +173,11 @@ interface AppDao {
 
     @Upsert
     suspend fun upsertTurnoResumo(resumo: TurnoResumoEntity)
+
+    @Query("SELECT * FROM supervisor ORDER BY id")
+    suspend fun supervisorsNow(): List<SupervisorEntity>
+
+    @Query("SELECT * FROM funcao_mo ORDER BY id")
+    suspend fun funcoesNow(): List<FuncaoMOEntity>
 }
+

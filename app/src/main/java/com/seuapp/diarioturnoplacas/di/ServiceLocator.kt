@@ -1,4 +1,4 @@
-﻿package com.seuapp.diarioturnoplacas.di
+package com.seuapp.diarioturnoplacas.di
 
 import android.content.Context
 import com.seuapp.diarioturnoplacas.data.db.AppDatabase
@@ -23,7 +23,7 @@ object ServiceLocator {
         synchronized(this) {
             if (initialized) return
             val db = AppDatabase.create(context)
-            appRepository = AppRepository(db.appDao(), ExcelImporter(context.contentResolver))
+            appRepository = AppRepository(db.appDao(), ExcelImporter(context.contentResolver, context))
             settingsRepository = SettingsRepository(context)
             capacityCalculator = CapacityCalculator()
             initialized = true
