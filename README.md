@@ -56,3 +56,22 @@ Lidas por cabecalho da primeira planilha:
 - O app inicializa com dados seed para demonstracao.
 - Importacao Excel fica na aba Programacao.
 - Gauge e banner mostram uso/acima da capacidade e causa (efetivo incompleto vs ineficiencia/demanda).
+
+## Bot Telegram (Python)
+Foi adicionado o script `telegram_bot.py` com um bot simples via long polling.
+
+### Configuracao
+1. Crie um bot com o `@BotFather` e obtenha o token.
+2. Defina a variavel de ambiente:
+   - PowerShell: `$env:TELEGRAM_BOT_TOKEN="SEU_TOKEN"`
+   - Bash: `export TELEGRAM_BOT_TOKEN="SEU_TOKEN"`
+
+### Execucao
+```bash
+python telegram_bot.py
+```
+
+Comandos disponiveis no bot:
+- `/start` e `/help`
+- `/status`
+- `/turno`
