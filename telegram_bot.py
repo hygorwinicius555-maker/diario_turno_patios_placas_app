@@ -8,6 +8,8 @@ from typing import Any, Dict, List
 
 
 class TelegramBot:
+    HTTP_TIMEOUT_BUFFER_SECONDS = 10
+
     def __init__(self, token: str, polling_timeout: int = 30, retry_delay: int = 3):
         self.token = token
         self.base_url = f"https://api.telegram.org/bot{token}"
@@ -24,7 +26,10 @@ class TelegramBot:
             method="POST",
         )
 
-        with urllib.request.urlopen(request, timeout=self.polling_timeout + 10) as response:
+        with urllib.request.urlopen(
+            request,
+            timeout=self.polling_timeout + self.HTTP_TIMEOUT_BUFFER_SECONDS,
+        ) as response:
             response_data = json.loads(response.read().decode("utf-8"))
             if not response_data.get("ok"):
                 description = response_data.get("description", "erro desconhecido")
@@ -75,8 +80,8 @@ class TelegramBot:
                     update_id = update.get("update_id")
                     if update_id is None:
                         continue
-                    self.offset = update_id + 1
                     self.handle_update(update)
+                    self.offset = update_id + 1
             except urllib.error.URLError as error:
                 print(f"Erro de rede: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
