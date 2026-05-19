@@ -4,6 +4,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from typing import Any, Dict, List
 
 
 class TelegramBot:
@@ -14,7 +15,7 @@ class TelegramBot:
         self.polling_timeout = polling_timeout
         self.retry_delay = retry_delay
 
-    def _api_request(self, method: str, payload: dict) -> dict:
+    def _api_request(self, method: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Executa uma chamada POST para a API do Telegram e retorna o JSON da resposta."""
         encoded_payload = urllib.parse.urlencode(payload).encode("utf-8")
         request = urllib.request.Request(
@@ -30,7 +31,7 @@ class TelegramBot:
                 raise RuntimeError(f"Erro da API Telegram: {description}")
             return response_data
 
-    def get_updates(self) -> list[dict]:
+    def get_updates(self) -> List[Dict[str, Any]]:
         payload = {"timeout": self.polling_timeout, "offset": self.offset}
         response_data = self._api_request("getUpdates", payload)
         return response_data.get("result", [])
@@ -38,7 +39,7 @@ class TelegramBot:
     def send_message(self, chat_id: int, text: str) -> None:
         self._api_request("sendMessage", {"chat_id": chat_id, "text": text})
 
-    def handle_update(self, update: dict) -> None:
+    def handle_update(self, update: Dict[str, Any]) -> None:
         message = update.get("message") or {}
         chat = message.get("chat") or {}
         chat_id = chat.get("id")
@@ -83,6 +84,7 @@ class TelegramBot:
                 print(f"Erro da API: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
             except KeyboardInterrupt:
+                print("Bot finalizado.")
                 raise
             except Exception as error:
                 print(f"Erro inesperado: {error}. Tentando novamente em {self.retry_delay}s...")

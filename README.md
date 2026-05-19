@@ -61,11 +61,13 @@ Lidas por cabecalho da primeira planilha:
 Arquivo: `telegram_bot.py`
 
 ### O que faz
-- Responde `/start` e `/help` com instrucoes
+- Responde `/start` e `/help` com instruções
 - Responde `/ping` com `pong`
 - Ecoa qualquer outra mensagem
 
 ### Como usar
+Prerequisito: Python 3.8+
+
 1. Crie um bot com o `@BotFather` e copie o token.
 2. Defina a variavel de ambiente:
    - PowerShell:
