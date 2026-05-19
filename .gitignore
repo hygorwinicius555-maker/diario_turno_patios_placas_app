@@ -29,3 +29,7 @@ captures/
 .env.server
 
 dRecursos/
+
+# Python
+__pycache__/
+*.pyc
