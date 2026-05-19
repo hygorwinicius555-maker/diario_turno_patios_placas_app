@@ -56,3 +56,27 @@ Lidas por cabecalho da primeira planilha:
 - O app inicializa com dados seed para demonstracao.
 - Importacao Excel fica na aba Programacao.
 - Gauge e banner mostram uso/acima da capacidade e causa (efetivo incompleto vs ineficiencia/demanda).
+
+## Bot no Telegram (Python)
+Arquivo: `telegram_bot.py`
+
+### O que faz
+- Responde `/start` e `/help` com instrucoes
+- Responde `/ping` com `pong`
+- Ecoa qualquer outra mensagem
+
+### Como usar
+1. Crie um bot com o `@BotFather` e copie o token.
+2. Defina a variavel de ambiente:
+   - PowerShell:
+     ```powershell
+     $env:TELEGRAM_BOT_TOKEN="SEU_TOKEN_AQUI"
+     ```
+   - Linux/macOS:
+     ```bash
+     export TELEGRAM_BOT_TOKEN="SEU_TOKEN_AQUI"
+     ```
+3. Execute:
+   ```bash
+   python telegram_bot.py
+   ```
