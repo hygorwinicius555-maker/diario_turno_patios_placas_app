@@ -15,6 +15,7 @@ class TelegramBot:
         self.retry_delay = retry_delay
 
     def _api_request(self, method: str, payload: dict) -> dict:
+        """Executa uma chamada POST para a API do Telegram e retorna o JSON da resposta."""
         encoded_payload = urllib.parse.urlencode(payload).encode("utf-8")
         request = urllib.request.Request(
             url=f"{self.base_url}/{method}",
@@ -25,7 +26,8 @@ class TelegramBot:
         with urllib.request.urlopen(request, timeout=self.polling_timeout + 10) as response:
             response_data = json.loads(response.read().decode("utf-8"))
             if not response_data.get("ok"):
-                raise RuntimeError(f"Erro da API Telegram: {response_data}")
+                description = response_data.get("description", "erro desconhecido")
+                raise RuntimeError(f"Erro da API Telegram: {description}")
             return response_data
 
     def get_updates(self) -> list[dict]:
@@ -63,17 +65,26 @@ class TelegramBot:
         self.send_message(chat_id, f"Você disse: {text}")
 
     def run(self) -> None:
+        """Inicia loop infinito de polling para receber e processar atualizações do bot."""
         print("Bot iniciado. Aguardando mensagens...")
         while True:
             try:
                 updates = self.get_updates()
                 for update in updates:
-                    self.offset = update["update_id"] + 1
+                    update_id = update.get("update_id")
+                    if update_id is None:
+                        continue
+                    self.offset = update_id + 1
                     self.handle_update(update)
             except urllib.error.URLError as error:
                 print(f"Erro de rede: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
+            except RuntimeError as error:
+                print(f"Erro da API: {error}. Tentando novamente em {self.retry_delay}s...")
+                time.sleep(self.retry_delay)
             except Exception as error:
+                if isinstance(error, KeyboardInterrupt):
+                    raise
                 print(f"Erro inesperado: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
 
