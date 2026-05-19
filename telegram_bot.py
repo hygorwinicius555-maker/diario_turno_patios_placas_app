@@ -85,7 +85,7 @@ class TelegramBot:
                 time.sleep(self.retry_delay)
             except KeyboardInterrupt:
                 print("Bot finalizado.")
-                raise
+                break
             except Exception as error:
                 print(f"Erro inesperado: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)

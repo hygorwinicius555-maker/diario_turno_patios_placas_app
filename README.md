@@ -66,10 +66,10 @@ Arquivo: `telegram_bot.py`
 - Ecoa qualquer outra mensagem
 
 ### Como usar
-Prerequisito: Python 3.8+
+Pré-requisito: Python 3.8+
 
 1. Crie um bot com o `@BotFather` e copie o token.
-2. Defina a variavel de ambiente:
+2. Defina a variável de ambiente:
    - PowerShell:
      ```powershell
      $env:TELEGRAM_BOT_TOKEN="SEU_TOKEN_AQUI"
