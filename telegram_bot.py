@@ -82,9 +82,9 @@ class TelegramBot:
             except RuntimeError as error:
                 print(f"Erro da API: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
+            except KeyboardInterrupt:
+                raise
             except Exception as error:
-                if isinstance(error, KeyboardInterrupt):
-                    raise
                 print(f"Erro inesperado: {error}. Tentando novamente em {self.retry_delay}s...")
                 time.sleep(self.retry_delay)
 
