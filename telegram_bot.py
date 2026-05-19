@@ -18,7 +18,7 @@ class TelegramBot:
         self.retry_delay = retry_delay
 
     def _api_request(self, method: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Executa uma chamada POST para a API do Telegram e retorna o JSON da resposta."""
+        """Executa POST na API do Telegram e retorna JSON; pode lançar RuntimeError."""
         encoded_payload = urllib.parse.urlencode(payload).encode("utf-8")
         request = urllib.request.Request(
             url=f"{self.base_url}/{method}",
@@ -32,7 +32,7 @@ class TelegramBot:
         ) as response:
             response_data = json.loads(response.read().decode("utf-8"))
             if not response_data.get("ok"):
-                description = response_data.get("description", "erro desconhecido")
+                description = response_data.get("description", "unknown error")
                 raise RuntimeError(f"Erro da API Telegram: {description}")
             return response_data
 
@@ -71,7 +71,7 @@ class TelegramBot:
         self.send_message(chat_id, f"Você disse: {text}")
 
     def run(self) -> None:
-        """Inicia loop infinito de polling para receber e processar atualizações do bot."""
+        """Executa polling contínuo até interrupção explícita (ex.: KeyboardInterrupt)."""
         print("Bot iniciado. Aguardando mensagens...")
         while True:
             try:
